@@ -19,10 +19,12 @@ typedef uint32_t uint32;
 #else
 
 #include <kos.h>
-#include <zlib/zlib.h>
-#include "fs.h"
+#include <stdarg.h>
+#include <stdio.h>
+#include "menu.h"
 
-extern uint8 romdisk[];
+#define dbglog(lv, fmt, ...) menu_draw_printf(lv, fmt, ##__VA_ARGS__)
+
 #endif
 
 #define ROMDISK_PATH "/rd"

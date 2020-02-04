@@ -11,6 +11,6 @@ void menu_init();
 
 void menu_run();
 
-int menu_draw_printf(const char *fmt, ...);
+void menu_draw_printf(int level, const char *fmt, ...);
 
 #endif //LOADER_MENU_H

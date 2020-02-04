@@ -4,7 +4,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "cross.h"
+#include "retrodream.h"
 #include "utility.h"
 
 FileList s_file_list;

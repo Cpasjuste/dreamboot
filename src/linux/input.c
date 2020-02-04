@@ -3,7 +3,7 @@
 //
 
 #include <SDL2/SDL_events.h>
-#include "cross.h"
+#include "retrodream.h"
 #include "input.h"
 
 uint32 get_input() {

@@ -34,7 +34,7 @@ else ()
     if (DEBUG_LX)
         list(APPEND CFLAGS -D__DEBUG_LX__)
     endif ()
-    set(LDFLAGS kosext2fs z ${KOS_LIBS})
+    set(LDFLAGS kosext2fs ${KOS_LIBS})
 endif ()
 
 #############

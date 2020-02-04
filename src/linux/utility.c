@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <dirent.h>
 #include <sys/stat.h>
-#include "cross.h"
+#include "retrodream.h"
 #include "utility.h"
 
 extern FileList s_file_list;

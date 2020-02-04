@@ -3,7 +3,7 @@
 //
 
 #include <string.h>
-#include "cross.h"
+#include "retrodream.h"
 #include "input.h"
 #include "drawing.h"
 #include "utility.h"
@@ -18,26 +18,46 @@ static Rect menuRect;
 static Rect pathRect;
 static Rect filerRect;
 
-int menu_draw_printf(const char *fmt, ...) {
+void menu_draw_printf(int level, const char *fmt, ...) {
 
+    /*
+    uint32 keys = get_input();
+    if (keys & ~INPUT_Y) {
+        return;
+    }
+
+    Color color;
     char buff[512];
     va_list args;
-    int i;
 
     memset(buff, 0, 512);
     va_start(args, fmt);
-    i = vsnprintf(buff, 512, fmt, args);
+    vsnprintf(buff, 512, fmt, args);
     va_end(args);
 
     if (menuRect.left == 0) {
         menu_init_rects();
     }
 
+    switch (level) {
+        case DBG_DEAD:
+        case DBG_ERROR:
+        case DBG_CRITICAL:
+            color = COL_RED;
+            break;
+        case DBG_WARNING:
+            color = COL_YELLOW;
+        default:
+            color = COL_WHITE;
+            break;
+    }
+
     draw_start();
-    draw_string(menuRect.left, menuRect.height, 110, COL_WHITE, buff);
+    draw_string(menuRect.left, menuRect.height, 110, color, buff);
     draw_end();
 
-    return i;
+    sleep(2);
+    */
 }
 
 void menu_init_rects() {

@@ -4,7 +4,7 @@
 
 #include <SDL2/SDL.h>
 #include "SDL_FontCache.h"
-#include "cross.h"
+#include "retrodream.h"
 #include "drawing.h"
 
 static SDL_Window *window;

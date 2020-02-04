@@ -2,11 +2,13 @@
 // Created by cpasjuste on 28/01/2020.
 //
 
-#include "cross.h"
+#include "retrodream.h"
 #include "drawing.h"
 #include "utility.h"
+#include "fs.h"
 
 KOS_INIT_FLAGS(INIT_DEFAULT);
+extern uint8 romdisk[];
 
 extern FileList s_file_list;
 
@@ -90,7 +92,8 @@ FileList *get_dir(const char *path) {
 
             if (strncmp(ent->name, "pty", 3) == 0
                 || strncmp(ent->name, "ram", 3) == 0
-                || strncmp(ent->name, "vmu", 3) == 0) {
+                || strncmp(ent->name, "vmu", 3) == 0
+                || strncmp(ent->name, "pc", 2) == 0) {
                 continue;
             }
 

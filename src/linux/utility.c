@@ -91,6 +91,10 @@ void loader_init() {
 
 }
 
-void dc_load_callback(void) {
+void dc_load_serial(void) {
+
+}
+
+void try_boot() {
 
 }

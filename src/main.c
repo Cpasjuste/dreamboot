@@ -6,6 +6,7 @@
 #include "menu.h"
 #include "input.h"
 #include "utility.h"
+#include "drawing.h"
 
 int main(int argc, char **argv) {
 
@@ -14,6 +15,7 @@ int main(int argc, char **argv) {
         dc_load_serial();
     }
 
+    draw_init();
     loader_init();
 
     if (keys & INPUT_START) {
@@ -23,6 +25,8 @@ int main(int argc, char **argv) {
         // if we didn't found anything, run menu
         menu_run();
     }
+
+    draw_exit();
 
     return 0;
 }

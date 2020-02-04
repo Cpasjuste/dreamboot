@@ -87,6 +87,12 @@ FileList *get_dir(const char *path) {
                 continue;
             }
 
+            if (strncmp(ent->name, "pty", 3) == 0
+                || strncmp(ent->name, "ram", 3) == 0
+                || strncmp(ent->name, "vmu", 3) == 0) {
+                continue;
+            }
+
             entry = (File *) malloc(sizeof(File));
             memset(entry, 0, sizeof(File));
             strncpy(entry->name, ent->name, MAX_PATH - 1);
@@ -222,9 +228,6 @@ void dc_load_serial(void) {
 
 void loader_init() {
 
-    //cont_btn_callback(0, CONT_START, (cont_btn_callback_t) start_callback);
-    //cont_btn_callback(0, CONT_A | CONT_B, (cont_btn_callback_t) dc_load_callback);
-
     if (fs_romdisk_mount(ROMDISK_PATH, (const uint8 *) romdisk, 0) == 0) {
         if (is_custom_bios()) {
             setup_syscalls();
@@ -232,8 +235,10 @@ void loader_init() {
         fs_romdisk_unmount(ROMDISK_PATH);
     }
 
+#ifndef __DEBUG_LX__
     InitIDE();
     InitSDCard();
+#endif
 }
 
 void try_boot() {

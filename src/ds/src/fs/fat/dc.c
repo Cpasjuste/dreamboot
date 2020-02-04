@@ -11,6 +11,7 @@
 #include "fatfs/diskio.h"
 #include "fatfs/ff.h"
 #include "fatfs/integer.h"
+#include "utils.h"
 
 //#define FATFS_DEBUG 1
 //#define FATFS_USE_CACHE 1

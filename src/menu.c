@@ -16,6 +16,29 @@ static int filer_highlight_index = 0;
 static Rect menuRect;
 static Rect filerRect;
 
+int menu_draw_printf(const char *fmt, ...) {
+
+    char buff[512];
+    va_list args;
+    int i;
+
+    memset(buff, 0, 512);
+    va_start(args, fmt);
+    i = vsnprintf(buff, 512, fmt, args);
+    va_end(args);
+
+    if (menuRect.left == 0) {
+        Vec2 screenSize = draw_get_screen_size();
+        menuRect = (Rect) {32, 32, screenSize.x - 64, screenSize.y - 64};
+    }
+
+    draw_start();
+    draw_string(menuRect.left, menuRect.height, 110, COL_WHITE, buff);
+    draw_end();
+
+    return i;
+}
+
 void menu_draw_bg(Rect *rect) {
     draw_box_outline(rect->left, rect->top, rect->width, rect->height,
                      100, COL_BLUE, COL_YELLOW, 4);
@@ -46,15 +69,15 @@ void menu_filer_draw(Rect *rect) {
 
             if (i == filer_highlight_index) {
                 draw_box_outline(rect->left - 2, rect->top + ((float) (i * filer_line_height)) - 2, rect->width + 4,
-                                 (float) filer_line_height + 4, 101, COL_RED, COL_WHITE, 2);
+                                 (float) filer_line_height + 4, 102, COL_RED, COL_WHITE, 2);
             }
 
             File *file = get_file(filer_index + i);
             if (file != NULL) {
                 if (file->type == TYPE_DIR) {
-                    draw_string(rect->left, rect->top + ((float) (i * filer_line_height)), 102, COL_YELLOW, file->name);
+                    draw_string(rect->left, rect->top + ((float) (i * filer_line_height)), 103, COL_YELLOW, file->name);
                 } else {
-                    draw_string(rect->left, rect->top + ((float) (i * filer_line_height)), 102, COL_WHITE, file->name);
+                    draw_string(rect->left, rect->top + ((float) (i * filer_line_height)), 103, COL_WHITE, file->name);
                 }
             }
         }
@@ -128,8 +151,6 @@ void menu_run() {
 
     uint32 input = 0;
 
-    draw_init();
-
     Vec2 screenSize = draw_get_screen_size();
     menuRect = (Rect) {32, 32, screenSize.x - 64, screenSize.y - 64};
     filerRect = (Rect) {menuRect.left + 8, menuRect.top + 8,
@@ -153,6 +174,4 @@ void menu_run() {
 
         draw_end();
     }
-
-    draw_exit();
 }

@@ -62,4 +62,6 @@ int setup_syscalls();
 
 void dc_load_serial();
 
+void loader_init();
+
 #endif //LOADER_UTILITY_H

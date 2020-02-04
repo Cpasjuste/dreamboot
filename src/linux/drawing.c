@@ -7,9 +7,10 @@
 #include "cross.h"
 #include "drawing.h"
 
-SDL_Window *window;
-SDL_Renderer *renderer;
-FC_Font *font;
+static SDL_Window *window;
+static SDL_Renderer *renderer;
+static FC_Font *font;
+static int drawing = 0;
 
 void draw_init() {
 
@@ -33,12 +34,18 @@ void draw_exit() {
 }
 
 void draw_start() {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
+    if (drawing == 0) {
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        drawing = 1;
+    }
 }
 
 void draw_end() {
-    SDL_RenderPresent(renderer);
+    if (drawing == 1) {
+        SDL_RenderPresent(renderer);
+        drawing = 0;
+    }
 }
 
 Vec2 draw_get_screen_size() {

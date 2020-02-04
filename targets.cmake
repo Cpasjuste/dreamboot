@@ -20,16 +20,16 @@ if (NOT PLATFORM_LINUX)
             )
     add_custom_target(${PROJECT_NAME}.bios
             DEPENDS ${PROJECT_NAME}.bin
-            COMMAND rm -f ${PROJECT_NAME}.bios
-            COMMAND dd if=${CMAKE_SOURCE_DIR}/res/boot_loader_retail.bios of=${PROJECT_NAME}.bios bs=1 count=65536
-            COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}.bios bs=1 seek=65536
-            COMMAND dd if=${CMAKE_SOURCE_DIR}/res/boot_loader_retail.bios of=${PROJECT_NAME}.bios bs=1 skip=`stat -c %s ${PROJECT_NAME}.bios` seek=`stat -c %s ${PROJECT_NAME}.bios`
+            COMMAND cp -f ${CMAKE_SOURCE_DIR}/res/boot_loader_retail.bios ${PROJECT_NAME}.bios
+            COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}.bios bs=1 seek=65536 conv=notrunc
             )
     add_custom_target(${PROJECT_NAME}-nogdrom.bios
             DEPENDS ${PROJECT_NAME}.bin
-            COMMAND rm -f ${PROJECT_NAME}-nogdrom.bios
-            COMMAND dd if=${CMAKE_SOURCE_DIR}/res/boot_loader_retail_nogdrom.bios of=${PROJECT_NAME}-nogdrom.bios bs=1 count=65536
-            COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}-nogdrom.bios bs=1 seek=65536
-            COMMAND dd if=${CMAKE_SOURCE_DIR}/res/boot_loader_retail_nogdrom.bios of=${PROJECT_NAME}-nogdrom.bios bs=1 skip=`stat -c %s ${PROJECT_NAME}-nogdrom.bios` seek=`stat -c %s ${PROJECT_NAME}-nogdrom.bios`
+            COMMAND cp -f ${CMAKE_SOURCE_DIR}/res/boot_loader_retail_nogdrom.bios ${PROJECT_NAME}-nogdrom.bios
+            COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}-nogdrom.bios bs=1 seek=65536 conv=notrunc
+            )
+    add_custom_target(${PROJECT_NAME}-nogdrom.bios-lx
+            DEPENDS ${PROJECT_NAME}-nogdrom.bios
+            COMMAND cp ${PROJECT_NAME}-nogdrom.bios ~/.lxdream/dcboot.rom
             )
 endif ()

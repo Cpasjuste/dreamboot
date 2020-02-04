@@ -27,6 +27,4 @@ extern uint8 romdisk[];
 
 #define ROMDISK_PATH "/rd"
 
-void loader_init();
-
 #endif //LOADER_CROSS_H

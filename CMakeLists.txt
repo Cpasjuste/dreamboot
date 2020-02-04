@@ -20,31 +20,15 @@ set(INCLUDES src)
 set(CFLAGS -DTARGET_NAME=DreamShell_boot_loader_v2.5 -DVERSION="2.5")
 
 if (PLATFORM_LINUX)
-    list(APPEND SOURCES
-            src/linux/drawing.c
-            src/linux/input.c
-            src/linux/utility.c
-            src/linux/SDL_FontCache.c)
+    file(GLOB_RECURSE CROSS_SOURCES src/linux/*.c)
+    list(APPEND SOURCES ${CROSS_SOURCES})
     list(APPEND CFLAGS -D__LINUX__)
     set(LDFLAGS SDL2 SDL2_ttf freetype)
 else ()
-    list(APPEND SOURCES
-            src/dc/descramble.c
-            src/dc/drawing.c
-            src/dc/input.c
-            src/dc/utility.c
-            ../../src/drivers/rtc.c
-            ../../src/drivers/spi.c
-            ../../src/drivers/sd.c
-            ../../src/fs/fs.c
-            ../../src/fs/fat/dc.c
-            ../../src/fs/fat/ff.c
-            ../../src/fs/fat/utils.c
-            ../../src/fs/fat/option/ccsbcs.c
-            ../../src/fs/fat/option/syscall.c
-            ../../src/utils/memcpy.S
-            ../../src/utils/memset.S)
-    list(APPEND INCLUDES ../../include ../../include/fatfs)
+    file(GLOB_RECURSE CROSS_SOURCES src/dc/*.c)
+    file(GLOB_RECURSE DS_SOURCES src/ds/*.*)
+    list(APPEND SOURCES ${CROSS_SOURCES} ${DS_SOURCES})
+    list(APPEND INCLUDES src/ds/include src/ds/include/fatfs)
     list(APPEND CFLAGS -D__DC__)
     set(LDFLAGS kosext2fs z ${KOS_LIBS})
 endif ()

@@ -385,8 +385,8 @@ int SearchRoot(int pass_cnt) {
 	
 success:
 	fs_close(hnd);
-	
-	if(strncasecmp(getenv("PATH"), "/pc", 3) && DirExists("/pc")) {
+
+	if(strncasecmp(getenv("PATH"), "/pc", 3) && dir_exists("/pc")) {
 		
 		dbglog(DBG_INFO, "Checking for root directory on /pc\n");
 

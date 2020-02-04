@@ -25,7 +25,7 @@ typedef uint32_t uint32;
 extern uint8 romdisk[];
 #endif
 
-#define RES_PATH "/brd"
+#define ROMDISK_PATH "/rd"
 
 void loader_init();
 

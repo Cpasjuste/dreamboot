@@ -8,22 +8,19 @@ static uint32 last_buttons = 0;
 
 uint32 get_input() {
 
-    maple_device_t *cont = NULL;
-    cont_state_t *state = NULL;
+    maple_device_t *cont = maple_enum_type(0, MAPLE_FUNC_CONTROLLER);
+    if (cont == NULL) {
+        return 0;
+    }
 
-    cont = maple_enum_type(0, MAPLE_FUNC_CONTROLLER);
+    cont_state_t *state = (cont_state_t *) maple_dev_status(cont);
+    if (state == NULL) {
+        return 0;
+    }
 
-    if (cont) {
-        state = (cont_state_t *) maple_dev_status(cont);
-
-        if (!state) {
-            return 1;
-        }
-
-        if (last_buttons != state->buttons) {
-            last_buttons = state->buttons;
-            return last_buttons;
-        }
+    if (last_buttons != state->buttons) {
+        last_buttons = state->buttons;
+        return state->buttons;
     }
 
     return 0;

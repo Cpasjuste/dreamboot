@@ -5,7 +5,6 @@
 #ifndef LOADER_UTILITY_H
 #define LOADER_UTILITY_H
 
-#define MAX_FILES 64
 #define MAX_PATH 512
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
@@ -17,6 +16,7 @@ enum FileSortFlags {
 enum FileType {
     TYPE_DIR,
     TYPE_FILE,
+    TYPE_BIN
 };
 
 typedef struct file_t {
@@ -42,6 +42,12 @@ int file_exists(const char *fn);
 
 int dir_exists(const char *dir);
 
+void try_boot();
+
+char *read_file(const char *file);
+
+void exec(const char *path);
+
 int is_hacked_bios();
 
 int is_custom_bios();
@@ -51,5 +57,9 @@ int is_no_syscalls();
 int flash_get_region();
 
 void descramble(uint8 *source, uint8 *dest, uint32 size);
+
+int setup_syscalls();
+
+void dc_load_serial();
 
 #endif //LOADER_UTILITY_H

@@ -96,12 +96,15 @@ void free_dir(FileList *list) {
 File *get_file(int index) {
 
     File *file = s_file_list.head;
+    if (index == 0) {
+        return file;
+    }
 
-    for (int i = 0; i < s_file_list.count; i++) {
-        if (index == i) {
-            return (File *) file->next;
-        }
+    for (int i = 1; i < s_file_list.count; i++) {
         file = (File *) file->next;
+        if (index == i) {
+            return file;
+        }
     }
 
     return NULL;

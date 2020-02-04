@@ -5,6 +5,8 @@
 #ifndef LOADER_MENU_H
 #define LOADER_MENU_H
 
+void menu_init_rects();
+
 void menu_init();
 
 void menu_run();

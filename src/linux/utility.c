@@ -67,7 +67,33 @@ FileList *get_dir(const char *path) {
 }
 
 char *read_file(const char *file) {
-    return NULL;
+
+    size_t size;
+    FILE *fp = NULL;
+    char *buffer = NULL;
+
+    fp = fopen(file, "rb");
+    if (fp == NULL) {
+        printf("read_file: can't open %s\n", file);
+        return NULL;
+    }
+
+    fseek(fp, 0L, SEEK_END);
+    size = ftell(fp);
+    fseek(fp, 0L, SEEK_SET);
+    buffer = (char *) malloc(size);
+    memset(buffer, 0, size);
+
+    if (fread(buffer, 1, size, fp) != size) {
+        fclose(fp);
+        free(buffer);
+        printf("read_file: can't read %s\n", file);
+        return NULL;
+    }
+
+    fclose(fp);
+
+    return buffer;
 }
 
 int flash_get_region() {
@@ -88,13 +114,17 @@ int is_no_syscalls() {
 }
 
 void loader_init() {
-
+    printf("loader_init\n");
 }
 
 void dc_load_serial(void) {
-
+    printf("dc_load_serial\n");
 }
 
-void try_boot() {
+void dc_load_ip(void) {
+    printf("dc_load_ip\n");
+}
 
+void exec(const char *path) {
+    printf("exec(%s)\n", path);
 }

@@ -7,6 +7,7 @@
 #include "input.h"
 #include "drawing.h"
 #include "utility.h"
+#include "menu.h"
 
 static FileList *fileList;
 static int filer_line_height = 0;
@@ -14,6 +15,7 @@ static int filer_line_max = 0;
 static int filer_index = 0;
 static int filer_highlight_index = 0;
 static Rect menuRect;
+static Rect pathRect;
 static Rect filerRect;
 
 int menu_draw_printf(const char *fmt, ...) {
@@ -28,8 +30,7 @@ int menu_draw_printf(const char *fmt, ...) {
     va_end(args);
 
     if (menuRect.left == 0) {
-        Vec2 screenSize = draw_get_screen_size();
-        menuRect = (Rect) {32, 32, screenSize.x - 64, screenSize.y - 64};
+        menu_init_rects();
     }
 
     draw_start();
@@ -39,16 +40,23 @@ int menu_draw_printf(const char *fmt, ...) {
     return i;
 }
 
-void menu_draw_bg(Rect *rect) {
-    draw_box_outline(rect->left, rect->top, rect->width, rect->height,
-                     100, COL_BLUE, COL_YELLOW, 4);
+void menu_init_rects() {
+
+    Vec2 screenSize = draw_get_screen_size();
+
+    menuRect = (Rect) {32, 32, screenSize.x - 64, screenSize.y - 64};
+
+    pathRect = (Rect) {menuRect.left + 8, menuRect.top + 8,
+                       menuRect.width - 16, DRAW_FONT_HEIGHT + DRAW_FONT_LINE_SPACING};
+
+    filerRect = (Rect) {menuRect.left + 8, pathRect.top + pathRect.height + 10,
+                        menuRect.width - 16, menuRect.height - pathRect.height - 26};
 }
 
 void menu_filer_get_dir(char *path) {
 
     if (filer_line_height == 0) {
-
-        filer_line_height = DRAW_FONT_HEIGHT + 4;
+        filer_line_height = DRAW_FONT_HEIGHT + DRAW_FONT_LINE_SPACING;
         filer_line_max = (int) filerRect.height / filer_line_height;
         if (filer_line_max * filer_line_height < (int) filerRect.height) {
             filer_line_height = (int) filerRect.height / filer_line_max;
@@ -61,23 +69,35 @@ void menu_filer_get_dir(char *path) {
     fileList = get_dir(path);
 }
 
-void menu_filer_draw(Rect *rect) {
+void menu_filer_draw() {
+
+    draw_box_outline(pathRect.left, pathRect.top, pathRect.width, pathRect.height,
+                     100, COL_BLUE, COL_YELLOW, 4);
+    draw_string(pathRect.left + 4, pathRect.top + (DRAW_FONT_LINE_SPACING / 2), 103, COL_YELLOW, fileList->path);
+
+    draw_box_outline(filerRect.left, filerRect.top, filerRect.width, filerRect.height,
+                     100, COL_BLUE, COL_YELLOW, 4);
 
     for (int i = 0; i < (unsigned int) filer_line_max; i++) {
 
         if (filer_index + i < fileList->count) {
 
             if (i == filer_highlight_index) {
-                draw_box_outline(rect->left - 2, rect->top + ((float) (i * filer_line_height)) - 2, rect->width + 4,
-                                 (float) filer_line_height + 4, 102, COL_RED, COL_WHITE, 2);
+                draw_box_outline(filerRect.left, filerRect.top + ((float) (i * filer_line_height)),
+                                 filerRect.width, (float) filer_line_height,
+                                 102, COL_RED, COL_WHITE, 2);
             }
 
             File *file = get_file(filer_index + i);
             if (file != NULL) {
                 if (file->type == TYPE_DIR) {
-                    draw_string(rect->left, rect->top + ((float) (i * filer_line_height)), 103, COL_YELLOW, file->name);
+                    draw_string(filerRect.left + 4,
+                                filerRect.top + (DRAW_FONT_LINE_SPACING / 2) + ((float) (i * filer_line_height)),
+                                103, COL_YELLOW, file->name);
                 } else {
-                    draw_string(rect->left, rect->top + ((float) (i * filer_line_height)), 103, COL_WHITE, file->name);
+                    draw_string(filerRect.left + 4,
+                                filerRect.top + (DRAW_FONT_LINE_SPACING / 2) + ((float) (i * filer_line_height)),
+                                103, COL_WHITE, file->name);
                 }
             }
         }
@@ -124,8 +144,7 @@ int menu_filer_input() {
             if (file->type == TYPE_DIR) {
                 menu_filer_get_dir(file->path);
             } else if (file->type == TYPE_BIN) {
-                // TODO: exec
-
+                exec(file->path);
             }
         }
     } else if (input & INPUT_B) {
@@ -151,10 +170,7 @@ void menu_run() {
 
     uint32 input = 0;
 
-    Vec2 screenSize = draw_get_screen_size();
-    menuRect = (Rect) {32, 32, screenSize.x - 64, screenSize.y - 64};
-    filerRect = (Rect) {menuRect.left + 8, menuRect.top + 8,
-                        menuRect.width - 16, menuRect.height - 16};
+    menu_init_rects();
 
     // init filer
     menu_filer_get_dir("/");
@@ -168,9 +184,7 @@ void menu_run() {
 
         draw_start();
 
-        menu_draw_bg(&menuRect);
-
-        menu_filer_draw(&filerRect);
+        menu_filer_draw();
 
         draw_end();
     }

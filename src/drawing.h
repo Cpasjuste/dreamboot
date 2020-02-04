@@ -7,6 +7,7 @@
 
 #define DRAW_FONT_WIDTH 12
 #define DRAW_FONT_HEIGHT 24
+#define DRAW_FONT_LINE_SPACING 4
 
 #define DRAW_PACK_COLOR(a, r, g, b) ( \
     a << 24 | \

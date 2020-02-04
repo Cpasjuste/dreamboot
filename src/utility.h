@@ -62,6 +62,10 @@ int setup_syscalls();
 
 void dc_load_serial();
 
+void dc_load_ip();
+
 void loader_init();
+
+void trim(char *str);
 
 #endif //LOADER_UTILITY_H

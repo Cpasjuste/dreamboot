@@ -15,6 +15,10 @@ int main(int argc, char **argv) {
         dc_load_serial();
     }
 
+    if (keys & INPUT_X && keys & INPUT_Y) {
+        dc_load_ip();
+    }
+
     draw_init();
     loader_init();
 
@@ -22,7 +26,6 @@ int main(int argc, char **argv) {
         menu_run();
     } else {
         try_boot();
-        // if we didn't found anything, run menu
         menu_run();
     }
 

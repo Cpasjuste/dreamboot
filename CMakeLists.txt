@@ -1,14 +1,15 @@
 cmake_minimum_required(VERSION 3.0)
-#set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 option(PLATFORM_LINUX "Linux platform target" OFF)
+option(DEBUG_LXDREAM "Enable lxdream emulator debug" OFF)
 
 include(toolchain.cmake)
 
 #############
 # ds loader
 #############
-project(loader)
+project(dreamboot)
 enable_language(ASM)
 
 #############

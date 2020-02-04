@@ -18,4 +18,18 @@ if (NOT PLATFORM_LINUX)
             DEPENDS ${PROJECT_NAME}
             COMMAND ${CMAKE_OBJCOPY} -R .stack -O binary ${PROJECT_NAME}.elf ${PROJECT_NAME}.bin
             )
+    add_custom_target(${PROJECT_NAME}.bios
+            DEPENDS ${PROJECT_NAME}.bin
+            COMMAND rm -f ${PROJECT_NAME}.bios
+            COMMAND dd if=${CMAKE_SOURCE_DIR}/res/boot_loader_retail.bios of=${PROJECT_NAME}.bios bs=1 count=65536
+            COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}.bios bs=1 seek=65536
+            COMMAND dd if=${CMAKE_SOURCE_DIR}/res/boot_loader_retail.bios of=${PROJECT_NAME}.bios bs=1 skip=`stat -c %s ${PROJECT_NAME}.bios` seek=`stat -c %s ${PROJECT_NAME}.bios`
+            )
+    add_custom_target(${PROJECT_NAME}-nogdrom.bios
+            DEPENDS ${PROJECT_NAME}.bin
+            COMMAND rm -f ${PROJECT_NAME}-nogdrom.bios
+            COMMAND dd if=${CMAKE_SOURCE_DIR}/res/boot_loader_retail_nogdrom.bios of=${PROJECT_NAME}-nogdrom.bios bs=1 count=65536
+            COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}-nogdrom.bios bs=1 seek=65536
+            COMMAND dd if=${CMAKE_SOURCE_DIR}/res/boot_loader_retail_nogdrom.bios of=${PROJECT_NAME}-nogdrom.bios bs=1 skip=`stat -c %s ${PROJECT_NAME}-nogdrom.bios` seek=`stat -c %s ${PROJECT_NAME}-nogdrom.bios`
+            )
 endif ()

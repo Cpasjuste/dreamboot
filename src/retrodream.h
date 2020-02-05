@@ -14,16 +14,20 @@
 typedef uint8_t uint8;
 typedef uint32_t uint32;
 
-#define DBG_INFO 0
-#define dbglog(f_, ...) printf((f_), __VA_ARGS__)
+#define DBG_DEAD        0
+#define DBG_CRITICAL    1
+#define DBG_ERROR       2
+#define DBG_WARNING     3
+#define DBG_NOTICE      4
+#define DBG_INFO        5
+#define DBG_DEBUG       6
+#define DBG_KDEBUG      7
+
 #else
 
 #include <kos.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include "menu.h"
-
-#define dbglog(lv, fmt, ...) menu_draw_printf(lv, fmt, ##__VA_ARGS__)
 
 #endif
 

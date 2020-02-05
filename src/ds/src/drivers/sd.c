@@ -21,6 +21,7 @@
 
 #include <kos/blockdev.h>
 #include <kos/dbglog.h>
+#include "retrolog.h"
 
 //#define SD_DEBUG 1
 

@@ -17,7 +17,7 @@ enable_language(ASM)
 #############
 
 file(GLOB SOURCES src/*.c)
-set(INCLUDES src)
+set(INCLUDES src src/uthash)
 set(CFLAGS -DTARGET_NAME=DreamShell_boot_loader_v2.5 -DVERSION="2.5")
 
 if (PLATFORM_LINUX)

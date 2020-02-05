@@ -6,12 +6,6 @@
 #define LOADER_UTILITY_H
 
 #define MAX_PATH 512
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-
-enum FileSortFlags {
-    SORT_NONE,
-    SORT_BY_NAME_AND_FOLDER,
-};
 
 enum FileType {
     TYPE_DIR,
@@ -19,26 +13,28 @@ enum FileType {
     TYPE_BIN
 };
 
-typedef struct file_t {
-    struct File *next;
-    struct File *previous;
+typedef struct ListItem {
+    struct ListItem *next, *prev;
     char name[MAX_PATH];
     char path[MAX_PATH];
     int type;
-} File;
+} ListItem;
 
-typedef struct file_list_t {
-    File *head;
-    File *tail;
-    int count;
+typedef struct List {
+    ListItem *head;
+    int size;
     char path[MAX_PATH];
-} FileList;
+} List;
 
-FileList *get_dir(const char *path);
+int list_cmp(ListItem *a, ListItem *b);
 
-File *get_file(int index);
+void get_dir(List *list, const char *path);
 
-int file_exists(const char *fn);
+void free_dir(List *list);
+
+ListItem *get_item(List *list, int index);
+
+int file_exists(const char *file);
 
 int dir_exists(const char *dir);
 

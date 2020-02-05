@@ -2,6 +2,7 @@
 // Created by cpasjuste on 28/01/2020.
 //
 
+#include "uthash/utlist.h"
 #include "retrodream.h"
 #include "drawing.h"
 #include "utility.h"
@@ -10,13 +11,55 @@
 KOS_INIT_FLAGS(INIT_DEFAULT);
 extern uint8 romdisk[];
 
-extern FileList s_file_list;
+void get_dir(List *list, const char *path) {
 
-extern void add_file(FileList *list, File *entry, int sort);
+    dirent_t *ent;
+    file_t fd;
+    ListItem *entry;
 
-extern FileList *get_dir(const char *path);
+    memset(list, 0, sizeof(List));
+    strncpy(list->path, path, MAX_PATH - 1);
 
-extern void free_dir(FileList *list);
+    if ((fd = fs_open(path, O_RDONLY | O_DIR)) != FILEHND_INVALID) {
+        while ((ent = fs_readdir(fd)) != NULL) {
+
+            // skip "."
+            if (ent->name[0] == '.') {
+                continue;
+            }
+
+            if (strncmp(ent->name, "pty", 3) == 0 || strncmp(ent->name, "ram", 3) == 0
+                || strncmp(ent->name, "vmu", 3) == 0 || strncmp(ent->name, "pc", 2) == 0
+                || strncmp(ent->name, "cd", 2) == 0) {
+                continue;
+            }
+
+            entry = (ListItem *) malloc(sizeof(ListItem));
+            memset(entry, 0, sizeof(ListItem));
+
+            strncpy(entry->name, ent->name, MAX_PATH - 1);
+            if (list->path[strlen(list->path) - 1] != '/') {
+                snprintf(entry->path, MAX_PATH - 1, "%s/%s", list->path, ent->name);
+            } else {
+                snprintf(entry->path, MAX_PATH - 1, "%s%s", list->path, ent->name);
+            }
+
+            entry->type = ent->attr == O_DIR ? TYPE_DIR : TYPE_FILE;
+            if (entry->type == TYPE_FILE) {
+                if (strstr(entry->name, ".bin") != NULL || strstr(entry->name, ".BIN") != NULL ||
+                    strstr(entry->name, ".elf") != NULL || strstr(entry->name, ".ELF") != NULL) {
+                    entry->type = TYPE_BIN;
+                }
+            }
+
+            DL_APPEND(list->head, entry);
+            list->size++;
+        }
+
+        DL_SORT(list->head, list_cmp);
+        fs_close(fd);
+    }
+}
 
 int file_exists(const char *fn) {
     file_t f;
@@ -70,55 +113,6 @@ char *read_file(const char *file) {
     fs_close(fd);
 
     return buffer;
-}
-
-FileList *get_dir(const char *path) {
-
-    dirent_t *ent;
-    file_t fd;
-    File *entry;
-
-    free_dir(&s_file_list);
-    memset(&s_file_list, 0, sizeof(FileList));
-    strncpy(s_file_list.path, path, MAX_PATH);
-
-    if ((fd = fs_open(path, O_RDONLY | O_DIR)) != FILEHND_INVALID) {
-        while ((ent = fs_readdir(fd)) != NULL) {
-
-            // skip "."
-            if (ent->name[0] == '.') {
-                continue;
-            }
-
-            if (strncmp(ent->name, "pty", 3) == 0
-                || strncmp(ent->name, "ram", 3) == 0
-                || strncmp(ent->name, "vmu", 3) == 0
-                || strncmp(ent->name, "pc", 2) == 0) {
-                continue;
-            }
-
-            entry = (File *) malloc(sizeof(File));
-            memset(entry, 0, sizeof(File));
-            strncpy(entry->name, ent->name, MAX_PATH - 1);
-            if (s_file_list.path[strlen(s_file_list.path) - 1] != '/') {
-                snprintf(entry->path, MAX_PATH - 1, "%s/%s", s_file_list.path, ent->name);
-            } else {
-                snprintf(entry->path, MAX_PATH - 1, "%s%s", s_file_list.path, ent->name);
-            }
-            entry->type = ent->attr == O_DIR ? TYPE_DIR : TYPE_FILE;
-            if (entry->type == TYPE_FILE) {
-                if (strstr(entry->name, ".bin") != NULL || strstr(entry->name, ".BIN") != NULL ||
-                    strstr(entry->name, ".elf") != NULL || strstr(entry->name, ".ELF") != NULL) {
-                    entry->type = TYPE_BIN;
-                }
-            }
-
-            add_file(&s_file_list, entry, SORT_BY_NAME_AND_FOLDER);
-        }
-        fs_close(fd);
-    }
-
-    return &s_file_list;
 }
 
 int flash_get_region() {
@@ -253,8 +247,8 @@ void loader_init() {
         fs_romdisk_unmount(ROMDISK_PATH);
     }
 
-#ifndef __DEBUG_LX__
     InitIDE();
+#ifndef __DEBUG_LX__
     InitSDCard();
 #endif
 }

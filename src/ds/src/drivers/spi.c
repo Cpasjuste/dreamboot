@@ -20,6 +20,7 @@
 #include <dc/fs_dcload.h>
 #include "drivers/spi.h"
 #include "drivers/sh7750_regs.h"
+#include "retrolog.h"
 
 #define _NO_VIDEO_H
 //#include "console.h"

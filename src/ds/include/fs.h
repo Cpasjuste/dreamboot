@@ -12,7 +12,7 @@
 #include <arch/types.h>
 #include <kos/blockdev.h>
 #include <ext2/fs_ext2.h>
-#include "retrodream.h"
+#include "retrolog.h"
 
 /**
  * Initialize SD Card 

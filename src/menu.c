@@ -19,10 +19,11 @@ static int highlight_index = 0;
 static Rect menuRect;
 static Rect pathRect;
 static Rect filerRect;
+static List menuList;
 static List fileList;
 extern List logList;
 
-void menu_init_rects() {
+void menu_init() {
 
     Vec2 screenSize = draw_get_screen_size();
 
@@ -130,26 +131,30 @@ int menu_input() {
                 highlight_index = 0;
             }
         }
-    } else if (input & INPUT_A) {
-        ListItem *file = get_item(&fileList, list_index + highlight_index);
-        if (file != NULL) {
-            if (file->type == TYPE_DIR) {
-                menu_get_dir(file->path);
-            } else if (file->type == TYPE_BIN) {
-                exec(file->path);
+    }
+
+    if (menu_id == MENU_FILER) {
+        if (input & INPUT_A) {
+            ListItem *file = get_item(&fileList, list_index + highlight_index);
+            if (file != NULL) {
+                if (file->type == TYPE_DIR) {
+                    menu_get_dir(file->path);
+                } else if (file->type == TYPE_BIN) {
+                    exec(file->path);
+                }
             }
-        }
-    } else if (input & INPUT_B) {
-        if (strlen(fileList.path) > 1) {
-            char *pos = strrchr(fileList.path, '/');
-            if (pos != NULL) {
-                if (strlen(pos) == 1) {
-                    menu_get_dir("/");
-                } else {
-                    char prev[MAX_PATH];
-                    memset(prev, 0, MAX_PATH);
-                    strncpy(prev, fileList.path, strlen(fileList.path) - strlen(pos) + 1);
-                    menu_get_dir(prev);
+        } else if (input & INPUT_B) {
+            if (strlen(fileList.path) > 1) {
+                char *pos = strrchr(fileList.path, '/');
+                if (pos != NULL) {
+                    if (strlen(pos) == 1) {
+                        menu_get_dir("/");
+                    } else {
+                        char prev[MAX_PATH];
+                        memset(prev, 0, MAX_PATH);
+                        strncpy(prev, fileList.path, strlen(fileList.path) - strlen(pos) + 1);
+                        menu_get_dir(prev);
+                    }
                 }
             }
         }
@@ -162,9 +167,8 @@ void menu_run() {
 
     uint32 input = 0;
 
-    menu_init_rects();
+    menu_init();
 
-    // init filer
     menu_get_dir("/");
 
     while (1) {

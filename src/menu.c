@@ -21,7 +21,7 @@ static int highlight_index = 0;
 static Rect menuRect;
 static Rect pathRect;
 static Rect filerRect;
-static List menuList = {NULL, 0, "MAIN MENU"};
+static List menuList = {NULL, 0, "BOOT MENU"};
 static List fileList;
 extern List logList;
 

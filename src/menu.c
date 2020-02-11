@@ -270,8 +270,6 @@ void menu_run() {
 
     menu_init();
 
-    //menu_get_dir("/");
-
     while (1) {
 
         input = menu_input();

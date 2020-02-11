@@ -23,7 +23,9 @@ int main(int argc, char **argv) {
     if (keys & INPUT_START) {
         menu_run();
     } else {
+#ifndef __DEBUG_LX__
         try_boot();
+#endif
         menu_run();
     }
 

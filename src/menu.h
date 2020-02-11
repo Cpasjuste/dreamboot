@@ -8,6 +8,8 @@
 enum Menu {
     MENU_MAIN,
     MENU_FILER,
+    MENU_DCLOAD_SERIAL,
+    MENU_DCLOAD_IP,
     MENU_LOGS
 };
 

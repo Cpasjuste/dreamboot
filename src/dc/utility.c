@@ -247,8 +247,8 @@ void loader_init() {
         fs_romdisk_unmount(ROMDISK_PATH);
     }
 
-    InitIDE();
 #ifndef __DEBUG_LX__
+    InitIDE();
     InitSDCard();
 #endif
 }

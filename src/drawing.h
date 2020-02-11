@@ -5,9 +5,9 @@
 #ifndef LOADER_DRAWING_H
 #define LOADER_DRAWING_H
 
-#define DRAW_FONT_WIDTH 12
-#define DRAW_FONT_HEIGHT 24
-#define DRAW_FONT_LINE_SPACING 4
+#define DRAW_FONT_WIDTH 12.0f
+#define DRAW_FONT_HEIGHT 24.0f
+#define DRAW_FONT_LINE_SPACING 4.0f
 
 #define DRAW_PACK_COLOR(a, r, g, b) ( \
     a << 24 | \

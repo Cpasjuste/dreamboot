@@ -12,13 +12,15 @@ include(toolchain.cmake)
 project(dreamboot)
 enable_language(ASM)
 
+set(VERSION "1.0.0")
+
 #############
 # code
 #############
 
 file(GLOB SOURCES src/*.c)
 set(INCLUDES src src/uthash)
-set(CFLAGS -DTARGET_NAME=DreamShell_boot_loader_v2.5 -DVERSION="2.5")
+set(CFLAGS -D__DB_VERSION__="${VERSION}")
 
 if (PLATFORM_LINUX)
     file(GLOB_RECURSE CROSS_SOURCES src/linux/*.c)

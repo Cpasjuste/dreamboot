@@ -7,6 +7,7 @@
 #include "drawing.h"
 #include "utility.h"
 #include "fs.h"
+#include "dreamfs.h"
 
 KOS_INIT_FLAGS(INIT_DEFAULT);
 extern uint8 romdisk[];
@@ -248,7 +249,8 @@ void loader_init() {
     }
 
 #ifndef __DEBUG_LX__
-    InitIDE();
+    //dream_fs_init();
     InitSDCard();
+    InitIDE();
 #endif
 }

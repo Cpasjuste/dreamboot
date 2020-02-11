@@ -22,8 +22,8 @@ void dream_fs_init() {
     devices[Sd].inited = sd_init();
     dream_fs_mount(Sd);
 
-    devices[Ide].inited = g1_ata_init();
-    dream_fs_mount(Ide);
+    //devices[Ide].inited = g1_ata_init();
+    //dream_fs_mount(Ide);
 }
 
 void dream_fs_exit() {
@@ -48,7 +48,7 @@ int dream_fs_mount(int dev) {
     uint8 deviceType;
 
     Device *device = &devices[dev];
-    if (!device->inited) {
+    if (device->inited != 0) {
         return -1;
     }
 
@@ -84,7 +84,7 @@ int dream_fs_mount(int dev) {
 void dream_fs_unmount(int dev) {
 
     Device *device = &devices[dev];
-    if (device->inited && device->mounted) {
+    if (device->inited == 0 && device->mounted == 0) {
         if (device->format == Ext2) {
             fs_ext2_sync(device->path);
             fs_ext2_unmount(device->path);

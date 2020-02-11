@@ -32,4 +32,8 @@ if (NOT PLATFORM_LINUX)
             DEPENDS ${PROJECT_NAME}-nogdrom.bios
             COMMAND cp ${PROJECT_NAME}-nogdrom.bios ~/.lxdream/dcboot.rom
             )
+    add_custom_target(${PROJECT_NAME}-nogdrom.bios-reicast
+            DEPENDS ${PROJECT_NAME}-nogdrom.bios
+            COMMAND cp ${PROJECT_NAME}-nogdrom.bios ~/.local/share/reicast/data/dc_boot.bin
+            )
 endif ()

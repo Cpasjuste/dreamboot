@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
 option(PLATFORM_LINUX "Linux platform target" OFF)
-option(DEBUG_LX "Enable lxdream debug" OFF)
+option(DEBUG_EMU "Enable emulator debug" OFF)
 
 include(toolchain.cmake)
 
@@ -33,10 +33,10 @@ else ()
     list(APPEND SOURCES ${CROSS_SOURCES} ${DS_SOURCES})
     list(APPEND INCLUDES src/ds/include src/ds/include/fatfs)
     list(APPEND CFLAGS -D__DC__)
-    if (DEBUG_LX)
-        list(APPEND CFLAGS -D__DEBUG_LX__)
+    if (DEBUG_EMU)
+        list(APPEND CFLAGS -D__DEBUG_EMU__)
     endif ()
-    set(LDFLAGS kosext2fs ${KOS_LIBS})
+    set(LDFLAGS png z m kosext2fs ${KOS_LIBS})
 endif ()
 
 #############

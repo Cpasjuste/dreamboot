@@ -55,6 +55,8 @@ void draw_box(float x, float y, float w, float h, float z, Color color);
 void draw_box_outline(float x, float y, float w, float h, float z,
                       Color color, Color outline_color, float outline_size);
 
+int draw_printf(int level, const char *fmt, ...);
+
 Vec2 draw_get_screen_size();
 
 #endif //LOADER_DRAWING_H

@@ -11,6 +11,7 @@
 
 KOS_INIT_FLAGS(INIT_DEFAULT);
 extern uint8 romdisk[];
+KOS_INIT_ROMDISK(romdisk);
 
 void get_dir(List *list, const char *path) {
 
@@ -30,8 +31,7 @@ void get_dir(List *list, const char *path) {
             }
 
             if (strncmp(ent->name, "pty", 3) == 0 || strncmp(ent->name, "ram", 3) == 0
-                || strncmp(ent->name, "vmu", 3) == 0 || strncmp(ent->name, "pc", 2) == 0
-                || strncmp(ent->name, "cd", 2) == 0) {
+                || strncmp(ent->name, "pc", 2) == 0 || strncmp(ent->name, "cd", 2) == 0) {
                 continue;
             }
 
@@ -202,7 +202,6 @@ void exec(const char *path) {
 
     file_t f = fs_open(path, O_RDONLY);
     if (f == FILEHND_INVALID) {
-        //dbgio_dev_select("fb");
         dbglog(DBG_INFO, "error: could not find dcload.bin\n");
         return;
     }
@@ -213,44 +212,49 @@ void exec(const char *path) {
 
 void dc_load_serial(void) {
 
+    /*
     if (fs_romdisk_mount(ROMDISK_PATH, (const uint8 *) romdisk, 0) != 0) {
-        //dbgio_dev_select("fb");
         dbglog(DBG_INFO, "error: could not mount romdisk\n");
         return;
     }
+    */
 
     exec(ROMDISK_PATH"/dcload-serial.bin");
 
-    // should not happen
-    fs_romdisk_unmount(ROMDISK_PATH);
+    //fs_romdisk_unmount(ROMDISK_PATH);
 }
 
 void dc_load_ip(void) {
 
+    /*
     if (fs_romdisk_mount(ROMDISK_PATH, (const uint8 *) romdisk, 0) != 0) {
-        //dbgio_dev_select("fb");
         dbglog(DBG_INFO, "error: could not mount romdisk\n");
         return;
     }
+    */
 
     exec(ROMDISK_PATH"/dcload-ip.bin");
 
-    // should not happen
-    fs_romdisk_unmount(ROMDISK_PATH);
+    //fs_romdisk_unmount(ROMDISK_PATH);
 }
 
 void loader_init() {
 
+    /*
     if (fs_romdisk_mount(ROMDISK_PATH, (const uint8 *) romdisk, 0) == 0) {
         if (is_custom_bios()) {
             setup_syscalls();
         }
         fs_romdisk_unmount(ROMDISK_PATH);
     }
+    */
+    if (is_custom_bios()) {
+        setup_syscalls();
+    }
 
-#ifndef __DEBUG_LX__
+#ifndef __DEBUG_EMU__
     //dream_fs_init();
-    InitSDCard();
     InitIDE();
+    InitSDCard();
 #endif
 }

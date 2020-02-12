@@ -9,6 +9,7 @@
 #include "retrodream.h"
 #include "uthash/utlist.h"
 #include "utility.h"
+#include "drawing.h"
 
 List logList = {NULL, 0, "LOGS"};
 
@@ -39,4 +40,9 @@ void retro_log(int level, const char *fmt, ...) {
 
     DL_APPEND(logList.head, item);
     logList.size++;
+
+    // debug to screen too
+    draw_printf(level, item->name);
+
+    sleep(1);
 }

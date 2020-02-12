@@ -2,10 +2,13 @@
 // Created by cpasjuste on 28/01/2020.
 //
 
-#include <kos.h>
+#include <png/png.h>
+#include "retrodream.h"
 #include "drawing.h"
+#include "bmfont.h"
 
-static pvr_ptr_t font_texture = NULL;
+static BMFont bmf_font;
+static pvr_ptr_t bmf_tex = NULL;
 
 pvr_init_params_t params = {
         {PVR_BINSIZE_16, PVR_BINSIZE_0, PVR_BINSIZE_32, PVR_BINSIZE_0, PVR_BINSIZE_0},
@@ -14,69 +17,45 @@ pvr_init_params_t params = {
 
 static void draw_init_font() {
 
-    uint16 *vram;
-    int x, y;
-
-    font_texture = pvr_mem_malloc(256 * 256 * 2);
-    vram = (uint16 *) font_texture;
-
-    for (y = 0; y < 8; y++) {
-        for (x = 0; x < 16; x++) {
-            bfont_draw(vram, 256, 0, y * 16 + x);
-            vram += 16;
-        }
-        vram += 23 * 256;
+    if (bmf_parse(ROMDISK_PATH"/future.fnt", &bmf_font) != 0) {
+        return;
     }
+
+    bmf_tex = pvr_mem_malloc(256 * 256 * 4);
+    png_to_texture(ROMDISK_PATH"/future_0.png", bmf_tex, PNG_FULL_ALPHA);
 }
 
-/* The following funcs blatantly ripped from libconio */
-/* Draw one font character (12x24) */
-static void draw_char(float x1, float y1, float z1, Color color, int c) {
+static void draw_char(float x1, float y1, float z1, Color color, BMFontChar *c) {
 
     pvr_vertex_t vert;
-    int ix, iy;
-    float u1, v1, u2, v2;
-
-    if (c == ' ')
-        return;
-
-    if (!(c > ' ' && c < 127))
-        return;
-
-    ix = (c % 16) * 16;
-    iy = (c / 16) * 24;
-    u1 = ix * 1.0f / 256.0f;
-    v1 = iy * 1.0f / 256.0f;
-    u2 = (ix + 12) * 1.0f / 256.0f;
-    v2 = (iy + 24) * 1.0f / 256.0f;
 
     vert.flags = PVR_CMD_VERTEX;
-    vert.x = x1;
-    vert.y = y1 + DRAW_FONT_HEIGHT;
+    vert.x = x1 + (float) c->xoffset;
+    vert.y = y1 + (float) c->height + (float) c->yoffset;
     vert.z = z1;
-    vert.u = u1;
-    vert.v = v2;
+    vert.u = (float) c->x / (float) bmf_font.common.scaleW;
+    vert.v = (float) (c->y + c->height) / (float) bmf_font.common.scaleH;
     vert.argb = DRAW_PACK_COLOR(color.a, color.r, color.g, color.b);
     vert.oargb = 0;
     pvr_prim(&vert, sizeof(vert));
 
-    vert.x = x1;
-    vert.y = y1;
-    vert.u = u1;
-    vert.v = v1;
+    vert.x = x1 + (float) (c->width + c->xoffset);
+    vert.y = y1 + (float) (c->height + c->yoffset);
+    vert.u = (float) (c->x + c->width) / (float) bmf_font.common.scaleW;
+    vert.v = (float) (c->y + c->height) / (float) bmf_font.common.scaleH;
     pvr_prim(&vert, sizeof(vert));
 
-    vert.x = x1 + DRAW_FONT_WIDTH;
-    vert.y = y1 + DRAW_FONT_HEIGHT;
-    vert.u = u2;
-    vert.v = v2;
+    vert.x = x1 + (float) (c->width + c->xoffset);
+    vert.y = y1 + (float) c->yoffset;
+    vert.u = (float) (c->x + c->width) / (float) bmf_font.common.scaleW;
+    vert.v = (float) c->y / (float) bmf_font.common.scaleH;
     pvr_prim(&vert, sizeof(vert));
 
     vert.flags = PVR_CMD_VERTEX_EOL;
-    vert.x = x1 + DRAW_FONT_WIDTH;
-    vert.y = y1;
-    vert.u = u2;
-    vert.v = v1;
+    vert.x = x1 + (float) c->xoffset;
+    vert.y = y1 + (float) c->yoffset;
+    vert.u = (float) c->x / (float) bmf_font.common.scaleW;
+    vert.v = (float) c->y / (float) bmf_font.common.scaleH;
     pvr_prim(&vert, sizeof(vert));
 }
 
@@ -87,15 +66,20 @@ void draw_string(float x, float y, float z, Color color, char *str) {
     pvr_poly_cxt_t cxt;
     pvr_poly_hdr_t poly;
 
-    pvr_poly_cxt_txr(&cxt, PVR_LIST_TR_POLY, PVR_TXRFMT_ARGB1555 | PVR_TXRFMT_NONTWIDDLED,
-                     256, 256, font_texture, PVR_FILTER_NONE);
+    pvr_poly_cxt_txr(&cxt, PVR_LIST_TR_POLY, PVR_TXRFMT_ARGB4444,
+                     256, 256, bmf_tex, PVR_FILTER_NONE);
     pvr_poly_compile(&poly, &cxt);
     pvr_prim(&poly, sizeof(poly));
 
     len = strlen(str);
     for (i = 0; i < len; i++) {
-        draw_char(x, y, z, color, str[i]);
-        x += DRAW_FONT_WIDTH;
+        char c = str[i];
+        if (!(c > 31 && c < 127)) {
+            continue;
+        }
+        BMFontChar bmfChar = bmf_font.chars[(int) c];
+        draw_char(x, y, z, color, &bmfChar);
+        x += (float) (bmfChar.xadvance + bmfChar.xoffset);
     }
 }
 
@@ -143,8 +127,8 @@ void draw_init() {
 }
 
 void draw_exit() {
-    if (font_texture != NULL) {
-        pvr_mem_free(font_texture);
+    if (bmf_tex != NULL) {
+        pvr_mem_free(bmf_tex);
     }
 }
 
@@ -161,4 +145,35 @@ void draw_end() {
 
 Vec2 draw_get_screen_size() {
     return (Vec2) {640, 480};
+}
+
+int draw_printf(int level, const char *fmt, ...) {
+
+    char buff[512];
+    va_list args;
+    Color color = COL_WHITE;
+    Vec2 screenSize = draw_get_screen_size();
+
+    memset(buff, 0, 512);
+    va_start(args, fmt);
+    int ret = vsnprintf(buff, 512, fmt, args);
+    va_end(args);
+
+    switch (level) {
+        case DBG_DEAD:
+        case DBG_ERROR:
+        case DBG_CRITICAL:
+            color = COL_RED;
+            break;
+        case DBG_WARNING:
+            color = COL_YELLOW;
+        default:
+            break;
+    }
+
+    draw_start();
+    draw_string(16, screenSize.y - DRAW_FONT_HEIGHT - 16, 200, color, buff);
+    draw_end();
+
+    return ret;
 }

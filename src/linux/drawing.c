@@ -68,3 +68,34 @@ void draw_box_outline(float x, float y, float w, float h, float z,
     draw_box(x - outline_size, y - outline_size, w + (outline_size * 2), h + (outline_size * 2), z - 1, outline_color);
     draw_box(x, y, w, h, z, color);
 }
+
+int draw_printf(int level, const char *fmt, ...) {
+
+    char buff[512];
+    va_list args;
+    Color color = COL_WHITE;
+    Vec2 screenSize = draw_get_screen_size();
+
+    memset(buff, 0, 512);
+    va_start(args, fmt);
+    int ret = vsnprintf(buff, 512, fmt, args);
+    va_end(args);
+
+    switch (level) {
+        case DBG_DEAD:
+        case DBG_ERROR:
+        case DBG_CRITICAL:
+            color = COL_RED;
+            break;
+        case DBG_WARNING:
+            color = COL_YELLOW;
+        default:
+            break;
+    }
+
+    draw_start();
+    draw_string(16, screenSize.y - DRAW_FONT_HEIGHT - 16, 200, color, buff);
+    draw_end();
+
+    return ret;
+}

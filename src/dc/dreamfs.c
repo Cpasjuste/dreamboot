@@ -20,8 +20,8 @@ void dream_fs_init() {
     fs_ext2_init();
     fs_fat_init();
 
-    //devices[Sd].inited = sd_init();
-    //dream_fs_mount(Sd);
+    devices[Sd].inited = sd_init();
+    dream_fs_mount(Sd);
 
     devices[Ide].inited = g1_ata_init();
     dream_fs_mount(Ide);

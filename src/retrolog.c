@@ -43,6 +43,4 @@ void retro_log(int level, const char *fmt, ...) {
 
     // debug to screen too
     draw_printf(level, item->name);
-
-    sleep(1);
 }

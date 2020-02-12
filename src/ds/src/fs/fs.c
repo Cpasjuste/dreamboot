@@ -184,15 +184,15 @@ int InitIDE() {
 	} else {
 		
 		use_dma = 0;
-		
+
 		if(g1_ata_read_chs(0, 0, 1, 1, (uint16_t *)buf) < 0) {
 			dbglog(DBG_ERROR, "Can't read MBR from IDE by CHS\n");
 			return -1;
 		}
 	}
-	
+
 	for(part = 0; part < MAX_PARTITIONS; part++) {
-		
+
 		if(!check_partition(buf, part) && !g1_ata_blockdev_for_partition(part, use_dma, &g1_dev[part], &partition_type)) {
 			
 			if(!part) {

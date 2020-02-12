@@ -2,6 +2,7 @@
 // Created by cpasjuste on 11/02/2020.
 //
 
+#if 0
 #ifdef __DREAMCAST__
 
 #include <kos.h>
@@ -19,27 +20,11 @@ void dream_fs_init() {
     fs_ext2_init();
     fs_fat_init();
 
-    devices[Sd].inited = sd_init();
-    dream_fs_mount(Sd);
+    //devices[Sd].inited = sd_init();
+    //dream_fs_mount(Sd);
 
-    //devices[Ide].inited = g1_ata_init();
-    //dream_fs_mount(Ide);
-}
-
-void dream_fs_exit() {
-
-    if (devices[Sd].inited == 0) {
-        dream_fs_unmount(Sd);
-        sd_shutdown();
-    }
-
-    if (devices[Ide].inited == 0) {
-        dream_fs_unmount(Ide);
-        g1_ata_shutdown();
-    }
-
-    fs_fat_shutdown();
-    fs_ext2_shutdown();
+    devices[Ide].inited = g1_ata_init();
+    dream_fs_mount(Ide);
 }
 
 int dream_fs_mount(int dev) {
@@ -96,4 +81,21 @@ void dream_fs_unmount(int dev) {
     }
 }
 
+void dream_fs_exit() {
+
+    if (devices[Sd].inited == 0) {
+        dream_fs_unmount(Sd);
+        sd_shutdown();
+    }
+
+    if (devices[Ide].inited == 0) {
+        dream_fs_unmount(Ide);
+        g1_ata_shutdown();
+    }
+
+    fs_fat_shutdown();
+    fs_ext2_shutdown();
+}
+
+#endif
 #endif

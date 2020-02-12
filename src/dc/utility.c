@@ -7,7 +7,6 @@
 #include "drawing.h"
 #include "utility.h"
 #include "fs.h"
-#include "dreamfs.h"
 
 KOS_INIT_FLAGS(INIT_DEFAULT);
 extern uint8 romdisk[];
@@ -206,54 +205,28 @@ void exec(const char *path) {
         return;
     }
 
+    draw_printf(DBG_INFO, "LOADING: %s\n", path);
     void *bin = fs_mmap(f);
     arch_exec(bin, fs_total(f));
 }
 
 void dc_load_serial(void) {
 
-    /*
-    if (fs_romdisk_mount(ROMDISK_PATH, (const uint8 *) romdisk, 0) != 0) {
-        dbglog(DBG_INFO, "error: could not mount romdisk\n");
-        return;
-    }
-    */
-
     exec(ROMDISK_PATH"/dcload-serial.bin");
-
-    //fs_romdisk_unmount(ROMDISK_PATH);
 }
 
 void dc_load_ip(void) {
 
-    /*
-    if (fs_romdisk_mount(ROMDISK_PATH, (const uint8 *) romdisk, 0) != 0) {
-        dbglog(DBG_INFO, "error: could not mount romdisk\n");
-        return;
-    }
-    */
-
     exec(ROMDISK_PATH"/dcload-ip.bin");
-
-    //fs_romdisk_unmount(ROMDISK_PATH);
 }
 
 void loader_init() {
 
-    /*
-    if (fs_romdisk_mount(ROMDISK_PATH, (const uint8 *) romdisk, 0) == 0) {
-        if (is_custom_bios()) {
-            setup_syscalls();
-        }
-        fs_romdisk_unmount(ROMDISK_PATH);
-    }
-    */
     if (is_custom_bios()) {
         setup_syscalls();
     }
 
 #ifndef __DEBUG_EMU__
-    //dream_fs_init();
     InitIDE();
     InitSDCard();
 #endif

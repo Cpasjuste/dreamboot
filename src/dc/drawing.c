@@ -173,6 +173,10 @@ Vec2 draw_get_screen_size() {
 
 int draw_printf(int level, const char *fmt, ...) {
 
+    if (bmf_tex == NULL) {
+        return 0;
+    }
+
     char buff[512];
     va_list args;
     Color color = COL_WHITE;

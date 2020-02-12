@@ -36,7 +36,7 @@ else ()
     if (DEBUG_EMU)
         list(APPEND CFLAGS -D__DEBUG_EMU__)
     endif ()
-    set(LDFLAGS png z m kosext2fs ${KOS_LIBS})
+    set(LDFLAGS kosext2fs ${KOS_LIBS})
 endif ()
 
 #############

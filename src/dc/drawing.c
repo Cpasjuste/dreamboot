@@ -15,14 +15,38 @@ pvr_init_params_t params = {
         512 * 1024
 };
 
+typedef struct {
+    char id[4];
+    short width;
+    short height;
+    int type;
+    int size;
+} tex_header_t;
+
 static void draw_init_font() {
 
+    FILE *fp;
+    tex_header_t hdr;
+
+    // parse BMFont font information
     if (bmf_parse(ROMDISK_PATH"/future.fnt", &bmf_font) != 0) {
         return;
     }
 
-    bmf_tex = pvr_mem_malloc(256 * 256 * 4);
-    png_to_texture(ROMDISK_PATH"/future_0.png", bmf_tex, PNG_FULL_ALPHA);
+    // load "texconv" texture
+    fp = fopen(ROMDISK_PATH"/future_0.tex", "r");
+    if (fp == NULL) {
+        return;
+    }
+    // read "texconv" texture header
+    fread(&hdr, sizeof(hdr), 1, fp);
+    // allocate pvr mem
+    bmf_tex = pvr_mem_malloc(hdr.size);
+    // read "texconv" texture to pvr mem
+    fread(bmf_tex, hdr.size, 1, fp);
+
+    // all done
+    fclose(fp);
 }
 
 static void draw_char(float x1, float y1, float z1, Color color, BMFontChar *c) {
@@ -39,22 +63,22 @@ static void draw_char(float x1, float y1, float z1, Color color, BMFontChar *c) 
     vert.oargb = 0;
     pvr_prim(&vert, sizeof(vert));
 
+    vert.x = x1 + (float) c->xoffset;
+    vert.y = y1 + (float) c->yoffset;
+    vert.u = (float) c->x / (float) bmf_font.common.scaleW;
+    vert.v = (float) c->y / (float) bmf_font.common.scaleH;
+    pvr_prim(&vert, sizeof(vert));
+
     vert.x = x1 + (float) (c->width + c->xoffset);
     vert.y = y1 + (float) (c->height + c->yoffset);
     vert.u = (float) (c->x + c->width) / (float) bmf_font.common.scaleW;
     vert.v = (float) (c->y + c->height) / (float) bmf_font.common.scaleH;
     pvr_prim(&vert, sizeof(vert));
 
+    vert.flags = PVR_CMD_VERTEX_EOL;
     vert.x = x1 + (float) (c->width + c->xoffset);
     vert.y = y1 + (float) c->yoffset;
     vert.u = (float) (c->x + c->width) / (float) bmf_font.common.scaleW;
-    vert.v = (float) c->y / (float) bmf_font.common.scaleH;
-    pvr_prim(&vert, sizeof(vert));
-
-    vert.flags = PVR_CMD_VERTEX_EOL;
-    vert.x = x1 + (float) c->xoffset;
-    vert.y = y1 + (float) c->yoffset;
-    vert.u = (float) c->x / (float) bmf_font.common.scaleW;
     vert.v = (float) c->y / (float) bmf_font.common.scaleH;
     pvr_prim(&vert, sizeof(vert));
 }
@@ -66,7 +90,7 @@ void draw_string(float x, float y, float z, Color color, char *str) {
     pvr_poly_cxt_t cxt;
     pvr_poly_hdr_t poly;
 
-    pvr_poly_cxt_txr(&cxt, PVR_LIST_TR_POLY, PVR_TXRFMT_ARGB4444,
+    pvr_poly_cxt_txr(&cxt, PVR_LIST_TR_POLY, PVR_TXRFMT_ARGB1555 | PVR_TXRFMT_VQ_ENABLE,
                      256, 256, bmf_tex, PVR_FILTER_NONE);
     pvr_poly_compile(&poly, &cxt);
     pvr_prim(&poly, sizeof(poly));

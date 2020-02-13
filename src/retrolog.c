@@ -25,8 +25,10 @@ void retro_log(int level, const char *fmt, ...) {
         case DBG_DEAD:
         case DBG_CRITICAL:
         case DBG_ERROR:
-        case DBG_WARNING:
             item->type = TYPE_DIR;
+            break;
+        case DBG_WARNING:
+            item->type = TYPE_BIN;
             break;
 
         default:

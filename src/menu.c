@@ -153,10 +153,10 @@ static void menu_draw() {
             ListItem *item = get_item(list, list_index + i);
             if (item != NULL) {
                 Color color = COL_WHITE;
-                if (menu_id == MENU_FILER && item->type == TYPE_DIR) {
+                if ((menu_id == MENU_FILER && item->type == TYPE_DIR)
+                    || (menu_id == MENU_LOGS && item->type == TYPE_BIN)) {
                     color = COL_YELLOW;
-                }
-                if (menu_id == MENU_LOGS && item->type == TYPE_DIR) {
+                } else if (menu_id == MENU_LOGS && item->type == TYPE_DIR) {
                     color = COL_RED;
                 }
                 draw_string(filerRect.left + 4,

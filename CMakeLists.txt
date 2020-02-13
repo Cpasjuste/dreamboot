@@ -12,7 +12,7 @@ include(toolchain.cmake)
 project(dreamboot)
 enable_language(ASM)
 
-set(VERSION "1.0.0")
+set(VERSION "1.0.1")
 
 #############
 # code

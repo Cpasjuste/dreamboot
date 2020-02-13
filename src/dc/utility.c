@@ -201,7 +201,7 @@ void exec(const char *path) {
 
     file_t f = fs_open(path, O_RDONLY);
     if (f == FILEHND_INVALID) {
-        dbglog(DBG_INFO, "error: could not find dcload.bin\n");
+        dbglog(DBG_ERROR, "EXEC: COULD NOT FIND %s\n", path);
         return;
     }
 

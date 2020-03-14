@@ -87,30 +87,40 @@ int dir_exists(const char *dir) {
     return 1;
 }
 
-char *read_file(const char *file) {
+char *read_file(const char *file, int *size) {
 
     file_t fd;
-    ssize_t size;
+    ssize_t fsize;
     char *buffer = NULL;
 
     fd = fs_open(file, O_RDONLY);
     if (fd == FILEHND_INVALID) {
         printf("read_file: can't open %s\n", file);
+        if (size != NULL) {
+            *size = 0;
+        }
         return NULL;
     }
 
-    size = fs_total(fd);
-    buffer = (char *) malloc(size);
-    memset(buffer, 0, size);
+    fsize = fs_total(fd);
+    buffer = (char *) malloc(fsize);
+    memset(buffer, 0, fsize);
 
-    if (fs_read(fd, buffer, size) != size) {
+    if (fs_read(fd, buffer, fsize) != fsize) {
         fs_close(fd);
         free(buffer);
         printf("read_file: can't read %s\n", file);
+        if (size != NULL) {
+            *size = 0;
+        }
         return NULL;
     }
 
     fs_close(fd);
+
+    if (size != NULL) {
+        *size = fsize;
+    }
 
     return buffer;
 }
@@ -199,15 +209,16 @@ int setup_syscalls() {
 
 void exec(const char *path) {
 
-    file_t f = fs_open(path, O_RDONLY);
-    if (f == FILEHND_INVALID) {
-        dbglog(DBG_ERROR, "EXEC: COULD NOT FIND %s\n", path);
+    draw_printf(DBG_INFO, "LOADING: %s\n", path);
+
+    int size = 0;
+    char *bin = read_file(path, &size);
+    if (bin == NULL || size < 1) {
+        retro_log(DBG_ERROR, "EXEC: COULD NOT READ %s\n", path);
         return;
     }
 
-    draw_printf(DBG_INFO, "LOADING: %s\n", path);
-    void *bin = fs_mmap(f);
-    arch_exec(bin, fs_total(f));
+    arch_exec(bin, size);
 }
 
 void dc_load_serial(void) {

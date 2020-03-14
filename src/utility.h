@@ -40,7 +40,7 @@ int dir_exists(const char *dir);
 
 void try_boot();
 
-char *read_file(const char *file);
+char *read_file(const char *file, int *size);
 
 void exec(const char *path);
 

@@ -48,16 +48,16 @@ ListItem *get_item(List *list, int index) {
 void try_boot() {
 
     // first check for boot config
-    if (file_exists("/ide/boot.cfg")) {
-        char *path = read_file("/ide/boot.cfg");
+    if (file_exists("/sd/boot.cfg")) {
+        char *path = read_file("/sd/boot.cfg", NULL);
         if (path != NULL) {
             trim(path);
             if (file_exists(path)) {
                 exec(path);
             }
         }
-    } else if (file_exists("/sd/boot.cfg")) {
-        char *path = read_file("/sd/boot.cfg");
+    } else if (file_exists("/ide/boot.cfg")) {
+        char *path = read_file("/ide/boot.cfg", NULL);
         if (path != NULL) {
             trim(path);
             if (file_exists(path)) {
@@ -65,17 +65,19 @@ void try_boot() {
             }
         }
     }
+
     // then retrodream.bin
-    if (file_exists("/ide/RD/retrodream.bin")) {
-        exec("/ide/RD/retrodream.bin");
-    } else if (file_exists("/sd/RD/retrodream.bin")) {
+    if (file_exists("/sd/RD/retrodream.bin")) {
         exec("/sd/RD/retrodream.bin");
+    } else if (file_exists("/ide/RD/retrodream.bin")) {
+        exec("/ide/RD/retrodream.bin");
     }
+
     // finally check for DS_CORE.BIN
-    if (file_exists("/ide/DS/DS_CORE.BIN")) {
-        exec("/ide/DS/DS_CORE.BIN");
-    } else if (file_exists("/sd/DS/DS_CORE.BIN")) {
+    if (file_exists("/sd/DS/DS_CORE.BIN")) {
         exec("/sd/DS/DS_CORE.BIN");
+    } else if (file_exists("/ide/DS/DS_CORE.BIN")) {
+        exec("/ide/DS/DS_CORE.BIN");
     }
 }
 

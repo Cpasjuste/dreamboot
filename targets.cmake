@@ -28,6 +28,36 @@ if (NOT PLATFORM_LINUX)
             COMMAND cp -f ${CMAKE_SOURCE_DIR}/res/boot_loader_retail_nogdrom.bios ${PROJECT_NAME}-nogdrom.bios
             COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}-nogdrom.bios bs=1 seek=65536 conv=notrunc
             )
+    add_custom_target(${PROJECT_NAME}-devkit.bios
+            DEPENDS ${PROJECT_NAME}.bin
+            COMMAND cp -f ${CMAKE_SOURCE_DIR}/res/boot_loader_devkit.bios ${PROJECT_NAME}-devkit.bios
+            COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}-devkit.bios bs=1 seek=65536 conv=notrunc
+            )
+    add_custom_target(${PROJECT_NAME}-devkit-nogdrom.bios
+            DEPENDS ${PROJECT_NAME}.bin
+            COMMAND cp -f ${CMAKE_SOURCE_DIR}/res/boot_loader_devkit_nogdrom.bios ${PROJECT_NAME}-devkit-nogdrom.bios
+            COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}-devkit-nogdrom.bios bs=1 seek=65536 conv=notrunc
+            )
+    add_custom_target(${PROJECT_NAME}-32mb.bios
+            DEPENDS ${PROJECT_NAME}.bin
+            COMMAND cp -f ${CMAKE_SOURCE_DIR}/res/boot_loader_retail_32mb.bios ${PROJECT_NAME}-32mb.bios
+            COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}-32mb.bios bs=1 seek=65536 conv=notrunc
+            )
+    add_custom_target(${PROJECT_NAME}-nogdrom-32mb.bios
+            DEPENDS ${PROJECT_NAME}.bin
+            COMMAND cp -f ${CMAKE_SOURCE_DIR}/res/boot_loader_retail_nogdrom_32mb.bios ${PROJECT_NAME}-nogdrom-32mb.bios
+            COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}-nogdrom-32mb.bios bs=1 seek=65536 conv=notrunc
+            )
+    add_custom_target(${PROJECT_NAME}-devkit-32mb.bios
+            DEPENDS ${PROJECT_NAME}.bin
+            COMMAND cp -f ${CMAKE_SOURCE_DIR}/res/boot_loader_devkit_32mb.bios ${PROJECT_NAME}-devkit-32mb.bios
+            COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}-devkit-32mb.bios bs=1 seek=65536 conv=notrunc
+            )
+    add_custom_target(${PROJECT_NAME}-devkit-nogdrom-32mb.bios
+            DEPENDS ${PROJECT_NAME}.bin
+            COMMAND cp -f ${CMAKE_SOURCE_DIR}/res/boot_loader_devkit_nogdrom_32mb.bios ${PROJECT_NAME}-devkit-nogdrom-32mb.bios
+            COMMAND dd if=${PROJECT_NAME}.bin of=${PROJECT_NAME}-devkit-nogdrom-32mb.bios bs=1 seek=65536 conv=notrunc
+            )
     add_custom_target(${PROJECT_NAME}-nogdrom.bios-lx
             DEPENDS ${PROJECT_NAME}-nogdrom.bios
             COMMAND cp ${PROJECT_NAME}-nogdrom.bios ~/.lxdream/dcboot.rom

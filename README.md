@@ -17,3 +17,7 @@ The bios will try to boot stuff in this order:
 - If "START" is pressed during boot up, the boot menu will be displayed
 - If "A" + "B" is pressed during boot up, dc-load-serial will be launched
 - If "X" + "Y" is pressed during boot up, dc-load-ip will be launched
+#### Building
+- install dreamcast (KallistiOS) sdk with "[pacbrew-pacman](https://github.com/PacBrew/pacbrew-packages/blob/master/README.md)"
+- add toolchain file to your cmake build command or ide:
+  - `-DCMAKE_TOOLCHAIN_FILE=/opt/pacbrew/dc/target/sh-elf/usr/lib/cmake/dc-toolchain.cmake`

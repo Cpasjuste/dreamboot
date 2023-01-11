@@ -16,7 +16,7 @@ if (NOT PLATFORM_LINUX)
     target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/romdisk.o)
     add_custom_target(${PROJECT_NAME}.bin
             DEPENDS ${PROJECT_NAME}
-            COMMAND ${CMAKE_OBJCOPY} -R .stack -O binary ${PROJECT_NAME}.elf ${PROJECT_NAME}.bin
+            COMMAND ${CMAKE_OBJCOPY} -R .stack -O binary ${PROJECT_NAME}${CMAKE_EXECUTABLE_SUFFIX} ${PROJECT_NAME}.bin
             )
     add_custom_target(${PROJECT_NAME}.bios
             DEPENDS ${PROJECT_NAME}.bin

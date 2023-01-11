@@ -2,7 +2,7 @@
 // Created by cpasjuste on 28/01/2020.
 //
 
-#include <png/png.h>
+#include <png.h>
 #include "retrodream.h"
 #include "drawing.h"
 #include "bmfont.h"

@@ -4,7 +4,10 @@ cmake_minimum_required(VERSION 3.0)
 option(PLATFORM_LINUX "Linux platform target" OFF)
 option(DEBUG_EMU "Enable emulator debug" OFF)
 
-include(toolchain.cmake)
+# toolchain: https://github.com/PacBrew/pacbrew-packages/blob/master/README.md
+if (NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+    include(toolchain.cmake)
+endif ()
 
 #############
 # ds loader
